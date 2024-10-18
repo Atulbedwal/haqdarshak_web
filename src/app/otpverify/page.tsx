@@ -125,8 +125,12 @@ const OTPVerification: React.FC<{ title: string }> = ({ title }) => {
         toast.error('Invalid OTP');
       }
     } catch (error) {
-      console.error('Error:', error.response || error.message); // Handle error response
-      if (error.response && error.response.status === 401) {
+      if (axios.isAxiosError(error)) {
+        console.error('Error:', error.response || error.message); // Handle error response
+      } else {
+        console.error('Error:', error); // Handle unknown error type
+      }
+      if (axios.isAxiosError(error) && error.response && error.response.status === 401) {
         toast.error('Unauthorized: OTP verification failed');
       } else {
         toast.error('Error verifying OTP');
