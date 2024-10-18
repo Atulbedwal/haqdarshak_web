@@ -1,16 +1,17 @@
-"use client"; // To ensure this is treated as a client component
+"use client"; // Ensure this component is treated as a client component
 import React, { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'; // Use next/navigation for the new App Router
 
-const HomePage: React.FC = () => {
-  const router = useRouter();
+const Home: React.FC = () => {
+  const router = useRouter(); // Get the router instance
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.push('/home2'); // Redirect to '/home2' after 3 seconds
-    }, 3000);
+      router.push('/home2'); // Navigate to the home2 page after 3 seconds
+    }, 3000); // 3000 milliseconds = 3 seconds
 
-    return () => clearTimeout(timer); // Cleanup timer if component unmounts
+    // Cleanup the timeout if the component unmounts before the timer completes
+    return () => clearTimeout(timer);
   }, [router]);
 
   return (
@@ -27,4 +28,4 @@ const HomePage: React.FC = () => {
   );
 };
 
-export default HomePage;
+export default Home;
