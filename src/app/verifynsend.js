@@ -9,7 +9,7 @@ require('dotenv').config();
 const prisma = new PrismaClient(); // Initialize Prisma Client
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;;
 
 app.use(bodyparser.json());
 app.use(cors());
