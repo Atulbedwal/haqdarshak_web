@@ -77,18 +77,15 @@ const ResendCode: React.FC<{ timer: string; resendOtp: () => void; disableResend
 const OTPVerification: React.FC<{ title: string }> = ({ title }) => {
   const router = useRouter();
   const [otp, setOtp] = useState<string[]>(["", "", "", ""]);
-  const [phoneNumber, setPhoneNumber] = useState<string>(""); // Phone number from query params
-  const [phoneNumber2, setPhoneNumber2] = useState<string>(""); // Phone number to track changes
   const [timer, setTimer] = useState(180);
   const [disableResend, setDisableResend] = useState(true);
+  const [phoneNumber, setPhoneNumber] = useState<string>(""); // Phone number from query params
 
-  const currentUrl = new URL(window.location.href);
-  const queryPhoneNumber = '+' + currentUrl.searchParams.get('phoneNumber')?.replace(/\s+/g, '');
-  // queryPhoneNumber.join(' ');
-  // queryPhoneNumber = `+${queryPhoneNumber}`;
-  console.log(queryPhoneNumber);
-
-
+  useEffect(() => {
+    const currentUrl = new URL(window.location.href);
+    const queryPhoneNumber = '+' + currentUrl.searchParams.get('phoneNumber')?.replace(/\s+/g, '');
+    setPhoneNumber(queryPhoneNumber); // Set phone number from query params
+  }, []);
 
   useEffect(() => {
     const countdown = setInterval(() => {
@@ -110,17 +107,17 @@ const OTPVerification: React.FC<{ title: string }> = ({ title }) => {
     const secs = seconds % 60;
     return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
   };
+
   const handleNextClick = async () => {
     const enteredOtp = otp.join(""); // Combine OTP digits
-    console.log("Phone Number:", phoneNumber2, "OTP:", enteredOtp);
+    console.log("Phone Number:", phoneNumber, "OTP:", enteredOtp);
 
     try {
-      const response = await axios.post('http://localhost:3001/verify-otp', { phoneNumber: queryPhoneNumber, userOTP: enteredOtp });
+      const response = await axios.post('http://localhost:3001/verify-otp', { phoneNumber, userOTP: enteredOtp });
       console.log("Server Response:", response.data);
       if (response.data.success) {
         toast.success('OTP verified successfully');
-        router.push('/personaldetails')
-        // Handle successful OTP verification logic (e.g., redirect)
+        router.push('/personaldetails'); // Handle successful OTP verification logic (e.g., redirect)
       } else {
         toast.error('Invalid OTP');
       }
@@ -137,7 +134,7 @@ const OTPVerification: React.FC<{ title: string }> = ({ title }) => {
       }
     }
 
-    setOtp(["", "", "", ""]);
+    setOtp(["", "", "", ""]); // Reset OTP input
   };
 
   const resendOtp = async () => {
@@ -146,7 +143,7 @@ const OTPVerification: React.FC<{ title: string }> = ({ title }) => {
     console.log("Resending OTP to the same number...");
 
     try {
-      const response = await axios.post('http://localhost:3001/resend-otp', { phoneNumber: queryPhoneNumber });
+      const response = await axios.post('http://localhost:3001/resend-otp', { phoneNumber });
       console.log("Resend OTP Response:", response.data);
       toast.success('OTP resent successfully');
     } catch (error) {
@@ -171,7 +168,6 @@ const OTPVerification: React.FC<{ title: string }> = ({ title }) => {
       </header>
       <main className="flex flex-col flex-1 items-center w-full bg-stone-100 px-6 py-8 rounded-[32px] h-full">
         <div className="flex flex-col max-w-full w-[296px]">
-
           <OTPInput otp={otp} setOtp={setOtp} />
           <ResendCode
             timer={formatTime(timer)}
