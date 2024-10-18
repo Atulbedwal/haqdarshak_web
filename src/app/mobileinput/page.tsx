@@ -1,17 +1,13 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import Link from 'next/link';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-interface IconButtonProps {
-  icon: string;
-  alt: string;
-}
-
-const IconButton: React.FC<IconButtonProps> = ({ icon, alt }) => {
+// IconButton Component
+const IconButton: React.FC<{ icon: string; alt: string }> = ({ icon, alt }) => {
   const router = useRouter();
 
   return (
@@ -24,14 +20,13 @@ const IconButton: React.FC<IconButtonProps> = ({ icon, alt }) => {
   );
 };
 
-interface InputSectionProps {
+// InputSection Component
+const InputSection: React.FC<{
   phoneNumber: string;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onNextClick: () => void;
   isButtonVisible: boolean;
-}
-
-const InputSection: React.FC<InputSectionProps> = ({ phoneNumber, onInputChange, onNextClick, isButtonVisible }) => {
+}> = ({ phoneNumber, onInputChange, onNextClick, isButtonVisible }) => {
   return (
     <section className="flex overflow-hidden flex-col flex-1 items-center pt-8 w-full bg-stone-100 rounded-[32px_32px_0px_0px]">
       <div className="flex flex-col items-center max-w-full w-[296px]">
@@ -63,14 +58,20 @@ const InputSection: React.FC<InputSectionProps> = ({ phoneNumber, onInputChange,
   );
 };
 
+// Main MobileNumberInput Component
 const MobileNumberInput: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isButtonVisible, setButtonVisible] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const [previousPage, setPreviousPage] = useState('login'); // Initialize default
 
-  // Retrieve the 'from' query parameter to track where the user came from
-  const previousPage = searchParams?.get('from') || 'login'; // Default to 'login' if no param is found
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const fromParam = searchParams.get('from');
+    if (fromParam) {
+      setPreviousPage(fromParam);
+    }
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -80,12 +81,10 @@ const MobileNumberInput: React.FC = () => {
 
   const handleNextClick = async () => {
     try {
-      // Send OTP via Axios to the backend
       const response = await axios.post('http://localhost:3001/send-otp', { phoneNumber });
 
       if (response.data.success) {
         toast.success('OTP sent successfully');
-        // Navigate to the OTP verification page and pass the 'from' parameter along
         router.push(`/otpverify?from=${previousPage}&phoneNumber=${phoneNumber}`);
       } else {
         toast.error('Failed to send OTP');
@@ -101,9 +100,7 @@ const MobileNumberInput: React.FC = () => {
       <div className="flex flex-col w-full min-h-[800px] bg-[#4f285e]">
         <header className="flex flex-col p-8 w-full bg-[#4f285e] max-sm:mr-0">
           <Link href="/login">
-            <button className="flex gap-2 items-start self-stretch px-4 py-2 my-auto w-14 bg-white shadow-lg rounded-[64px]">
-              <img loading="lazy" src="/pics/Arrow.png" className="object-contain w-6 aspect-square" alt="" />
-            </button>
+            <IconButton icon="/pics/Arrow.png" alt="Go back" />
           </Link>
           <h1 className="mt-8 text-3xl font-medium leading-10 text-white">
             Enter your Mobile Number
