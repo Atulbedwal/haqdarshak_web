@@ -11,6 +11,7 @@ const prisma = new PrismaClient(); // Initialize Prisma Client
 const app = express();
 const port = process.env.PORT || 3001;;
 
+
 app.use(bodyparser.json());
 app.use(cors());
 
@@ -20,6 +21,10 @@ const client = new twilio(accountSID, authToken);
 
 // Function to generate a random 6-digit OTP
 const generateOtp = () => Math.floor(1000 + Math.random() * 9000);
+
+app.get('/', (req, res) => {
+    res.send('Welcome to the Haqdarshak API!');
+});
 
 // API endpoint to initiate OTP generation and send to user's phone
 app.post("/send-otp", async (req, res) => {
