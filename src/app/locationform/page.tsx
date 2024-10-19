@@ -67,7 +67,7 @@ const LocationForm: React.FC = () => {
 
       try {
         // Make a POST request to your Express server to save location details
-        const response = await fetch('http://localhost:3001/save-location', {
+        const response = await fetch('https://haqdarshak-web.onrender.com/save-location', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
