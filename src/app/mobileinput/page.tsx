@@ -81,7 +81,7 @@ const MobileNumberInput: React.FC = () => {
 
   const handleNextClick = async () => {
     try {
-      const response = await axios.post('http://localhost:3001/send-otp', { phoneNumber });
+      const response = await axios.post('https://haqdarshak-web.onrender.com/send-otp', { phoneNumber });
 
       if (response.data.success) {
         toast.success('OTP sent successfully');
