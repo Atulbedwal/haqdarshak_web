@@ -113,7 +113,7 @@ const OTPVerification: React.FC<{ title: string }> = ({ title }) => {
     console.log("Phone Number:", phoneNumber, "OTP:", enteredOtp);
 
     try {
-      const response = await axios.post('http://localhost:3001/verify-otp', { phoneNumber, userOTP: enteredOtp });
+      const response = await axios.post('https://haqdarshak-web.onrender.com/verify-otp', { phoneNumber, userOTP: enteredOtp });
       console.log("Server Response:", response.data);
       if (response.data.success) {
         toast.success('OTP verified successfully');
@@ -143,7 +143,7 @@ const OTPVerification: React.FC<{ title: string }> = ({ title }) => {
     console.log("Resending OTP to the same number...");
 
     try {
-      const response = await axios.post('http://localhost:3001/resend-otp', { phoneNumber });
+      const response = await axios.post('https://haqdarshak-web.onrender.com/resend-otp', { phoneNumber });
       console.log("Resend OTP Response:", response.data);
       toast.success('OTP resent successfully');
     } catch (error) {
